@@ -70,7 +70,7 @@ void MainWindow::browse_img()
     std::cout <<"Browse..." << std::endl;
     QString filename;
     filename = QFileDialog::getOpenFileName(this,
-    tr("Open Image"), ".", tr("Image Files (*.png *.jpg *.bmp *.pgm)"));
+    tr("Open Image"), "./data", tr("Image Files (*.png *.jpg *.bmp *.pgm)"));
     std::cout << filename.toStdString() << std::endl;
 
     load_img(filename, NO);
