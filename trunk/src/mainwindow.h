@@ -7,9 +7,9 @@
 
 enum W_pic
 {
-    NO,
+    NW,
     NE,
-    SO,
+    SW,
     SE,
 };
 
@@ -28,12 +28,24 @@ public:
 public slots:
     void browse_img();
     void load_img(QString filename, W_pic pos);
-    void load_img(QPixmap pixmap, W_pic pos);
-    void save_img(W_pic pos);
+
+    //Save
+    void save_img_NW();
+    void save_img_NE();
+    void save_img_SW();
+    void save_img_SE();
+
+    //To main
+    void toNW();
+    void refresh();
+
+    //Resize IN PROGRESS
+    /*void resize(const QSize &);
+    void resize(int w, int h);*/
     
 private:
     Ui::MainWindow *ui;
-    std::vector<QPixmap> v_pixmaps;
+    std::vector<QImage> v_imgs;
 };
 
 #endif // MAINWINDOW_H
