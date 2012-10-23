@@ -11,7 +11,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
 
     //My Pixmap vector
-    v_pixmaps.resize(4, NULL);
+    v_imgs.resize(4);
 
     /* ==MENU== */
     //FileMenu
@@ -25,19 +25,19 @@ MainWindow::MainWindow(QWidget *parent) :
     QMenu *m_save;
     m_save = m_file->addMenu(tr("&Save"));
     //----4 images
-    QAction *a_save_NO = new QAction("NO...", this);
-    //connect(a_open, SIGNAL(triggered()), this, SLOT(save_img(NO)));
+    QAction *a_save_NW = new QAction("NW...", this);
+    connect(a_save_NW, SIGNAL(triggered()), this, SLOT(save_img_NW()));
 
     QAction *a_save_NE = new QAction("NE...", this);
-    //connect(a_open, SIGNAL(triggered()), this, SLOT(save_img(NE)));
+    connect(a_save_NE, SIGNAL(triggered()), this, SLOT(save_img_NE()));
 
-    QAction *a_save_SO = new QAction("SO...", this);
-    //connect(a_open, SIGNAL(triggered()), this, SLOT(save_img(SO)));
+    QAction *a_save_SW = new QAction("SW...", this);
+    connect(a_save_SW, SIGNAL(triggered()), this, SLOT(save_img_SW()));
 
-    QAction *a_save_SE = new QAction("NO...", this);
-    //connect(a_open, SIGNAL(triggered()), this, SLOT(save_img(SE)));
+    QAction *a_save_SE = new QAction("SE...", this);
+    connect(a_save_SE, SIGNAL(triggered()), this, SLOT(save_img_SE()));
 
-    //Quit Button
+    //Quit menu
     QAction *a_quit = new QAction("&Quit", this);
     connect(a_quit , SIGNAL(triggered()), qApp, SLOT(quit()));
 
@@ -46,16 +46,18 @@ MainWindow::MainWindow(QWidget *parent) :
     m_file->addSeparator();
     m_file->addAction(a_quit);
 
-    m_save->addAction(a_save_NO);
+    m_save->addAction(a_save_NW);
     m_save->addAction(a_save_NE);
-    m_save->addAction(a_save_SO);
+    m_save->addAction(a_save_SW);
     m_save->addAction(a_save_SE);
 
     //Title name
     this->setWindowTitle(QString("Luwak"));
 
-    //Browse button
-    connect(ui->b_browse_img, SIGNAL(clicked()), this, SLOT(browse_img()));
+
+    //To NW Button
+    connect(ui->b_toNW , SIGNAL(clicked()), this, SLOT(toNW()));
+
 //    //Resize Event
 //    this->connect(ui->centralWidget, ui->centralWidget->resizeEvent(), SLOT(Resize()));
 }
@@ -73,9 +75,21 @@ void MainWindow::browse_img()
     tr("Open Image"), "./data", tr("Image Files (*.png *.jpg *.bmp *.pgm)"));
     std::cout << filename.toStdString() << std::endl;
 
-    load_img(filename, NO);
+    load_img(filename, NW);
 }
 
+//Resize IN PROGRESS
+/*void MainWindow::resize(const QSize &)
+{
+    std::cout << "resize const" << std::endl;
+    refresh();
+}
+
+void MainWindow::resize(int w, int h)
+{
+    std::cout << "resize int" << std::endl;
+    refresh();
+}*/
 
 
 void MainWindow::load_img(QString filename, W_pic pos)
@@ -85,83 +99,80 @@ void MainWindow::load_img(QString filename, W_pic pos)
     QGraphicsScene* scene = new QGraphicsScene();
     switch(pos)
     {
-    case(NO):
-        v_pixmaps[0] = QPixmap::fromImage(q_img);
+    case(NW):
+        v_imgs[0] = q_img;
 
-        scene->addPixmap(v_pixmaps[0].scaled(QSize(ui->graphicsViewNO->width(),ui->graphicsViewNO->height()), Qt::KeepAspectRatio));
-        ui->graphicsViewNO->setScene(scene);
+        scene->addPixmap(QPixmap::fromImage(q_img).scaled(QSize(ui->graphicsViewNW->width(),ui->graphicsViewNW->height()), Qt::KeepAspectRatio));
+        ui->graphicsViewNW->setScene(scene);
         break;
 
     case(NE):
-        v_pixmaps[1] = QPixmap::fromImage(q_img);
+        v_imgs[1] = q_img;
 
-        scene->addPixmap(v_pixmaps[1].scaled(QSize(ui->graphicsViewNE->width(),ui->graphicsViewNE->height()), Qt::KeepAspectRatio));
+        scene->addPixmap(QPixmap::fromImage(q_img).scaled(QSize(ui->graphicsViewNE->width(),ui->graphicsViewNE->height()), Qt::KeepAspectRatio));
         ui->graphicsViewNE->setScene(scene);
         break;
 
-    case(SO):
-        v_pixmaps[2] = QPixmap::fromImage(q_img);
+    case(SW):
+        v_imgs[2] = q_img;
 
-        scene->addPixmap(v_pixmaps[2].scaled(QSize(ui->graphicsViewSO->width(),ui->graphicsViewSO->height()), Qt::KeepAspectRatio));
-        ui->graphicsViewSO->setScene(scene);
+        scene->addPixmap(QPixmap::fromImage(q_img).scaled(QSize(ui->graphicsViewSW->width(),ui->graphicsViewSW->height()), Qt::KeepAspectRatio));
+        ui->graphicsViewSW->setScene(scene);
         break;
 
     case(SE):
-        v_pixmaps[3] = QPixmap::fromImage(q_img);
+        v_imgs[3] = q_img;
 
-        scene->addPixmap(v_pixmaps[3].scaled(QSize(ui->graphicsViewSE->width(),ui->graphicsViewSE->height()), Qt::KeepAspectRatio));
+        scene->addPixmap(QPixmap::fromImage(q_img).scaled(QSize(ui->graphicsViewSE->width(),ui->graphicsViewSE->height()), Qt::KeepAspectRatio));
         ui->graphicsViewSE->setScene(scene);
         break;
 
         default:
-            std::cout << "nothing to do here" << std::endl;
+            std::cout << "Nothing to do here" << std::endl;
             break;
     }
+}
+
+void MainWindow::save_img_NW()
+{
+    std::cout <<"Save NW..." << std::endl;
+    QString filename;
+    filename = QFileDialog::getSaveFileName(this,
+    tr("Save Image"), "./data/NW.png", tr("Images (*.png *.xpm *.jpg)"));
+    v_imgs[NW].save(filename);
 
 }
 
-void MainWindow::load_img(QPixmap pixmap, W_pic pos)
+void MainWindow::save_img_NE()
+{
+
+
+}
+
+void MainWindow::save_img_SW()
+{
+
+
+}
+
+void MainWindow::save_img_SE()
+{
+
+
+}
+
+void MainWindow::toNW()
+{
+    std::cout <<"To NW..." << std::endl;
+    int i = ui->cb_toNW->currentIndex()+1;
+    v_imgs[0] = v_imgs[i];
+
+    refresh();
+}
+
+void MainWindow::refresh()
 {
     QGraphicsScene* scene = new QGraphicsScene();
-    switch(pos)
-    {
-    case(NO):
-        v_pixmaps[0] = pixmap;
-
-        scene->addPixmap(v_pixmaps[0].scaled(QSize(ui->graphicsViewNO->width(),ui->graphicsViewNO->height()), Qt::KeepAspectRatio));
-        ui->graphicsViewNO->setScene(scene);
-        break;
-
-    case(NE):
-        v_pixmaps[1] = pixmap;
-
-        scene->addPixmap(v_pixmaps[1].scaled(QSize(ui->graphicsViewNE->width(),ui->graphicsViewNE->height()), Qt::KeepAspectRatio));
-        ui->graphicsViewNE->setScene(scene);
-        break;
-
-    case(SO):
-        v_pixmaps[2] = pixmap;
-
-        scene->addPixmap(v_pixmaps[2].scaled(QSize(ui->graphicsViewSO->width(),ui->graphicsViewSO->height()), Qt::KeepAspectRatio));
-        ui->graphicsViewSO->setScene(scene);
-        break;
-
-    case(SE):
-        v_pixmaps[3] = pixmap;
-
-        scene->addPixmap(v_pixmaps[3].scaled(QSize(ui->graphicsViewSE->width(),ui->graphicsViewSE->height()), Qt::KeepAspectRatio));
-        ui->graphicsViewSE->setScene(scene);
-        break;
-
-        default:
-            std::cout << "nothing to do here" << std::endl;
-            break;
-    }
-
-}
-
-void MainWindow::save_img(W_pic pos)
-{
-
-
+    scene->addPixmap(QPixmap::fromImage(v_imgs[0]).scaled(QSize(ui->graphicsViewNW->width(),ui->graphicsViewNW->height()), Qt::KeepAspectRatio));
+    ui->graphicsViewNW->setScene(scene);
 }
