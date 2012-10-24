@@ -39,9 +39,8 @@ public slots:
     void toNW();
     void refresh();
 
-    //Resize IN PROGRESS
-    /*void resize(const QSize &);
-    void resize(int w, int h);*/
+    //Resize
+    void resizeEvent(QResizeEvent *);
     
 private:
     Ui::MainWindow *ui;
