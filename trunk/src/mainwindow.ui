@@ -37,7 +37,7 @@
       </property>
       <item>
        <layout class="QGridLayout" name="imgGridLayout">
-        <item row="0" column="1">
+        <item row="1" column="1">
          <widget class="QGraphicsView" name="graphicsViewNE">
           <property name="verticalScrollBarPolicy">
            <enum>Qt::ScrollBarAlwaysOff</enum>
@@ -47,7 +47,14 @@
           </property>
          </widget>
         </item>
-        <item row="1" column="1">
+        <item row="3" column="1">
+         <widget class="QLabel" name="l_SE">
+          <property name="text">
+           <string>SE</string>
+          </property>
+         </widget>
+        </item>
+        <item row="4" column="1">
          <widget class="QGraphicsView" name="graphicsViewSE">
           <property name="verticalScrollBarPolicy">
            <enum>Qt::ScrollBarAlwaysOff</enum>
@@ -57,7 +64,7 @@
           </property>
          </widget>
         </item>
-        <item row="1" column="0">
+        <item row="4" column="0">
          <widget class="QGraphicsView" name="graphicsViewSW">
           <property name="verticalScrollBarPolicy">
            <enum>Qt::ScrollBarAlwaysOff</enum>
@@ -67,13 +74,48 @@
           </property>
          </widget>
         </item>
+        <item row="3" column="0">
+         <widget class="QLabel" name="l_SW">
+          <property name="text">
+           <string>SW</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="1">
+         <widget class="QLabel" name="l_NE">
+          <property name="text">
+           <string>NE</string>
+          </property>
+         </widget>
+        </item>
         <item row="0" column="0">
+         <widget class="QLabel" name="l_NW">
+          <property name="text">
+           <string>Original</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0">
          <widget class="QGraphicsView" name="graphicsViewNW">
           <property name="verticalScrollBarPolicy">
            <enum>Qt::ScrollBarAlwaysOff</enum>
           </property>
           <property name="horizontalScrollBarPolicy">
            <enum>Qt::ScrollBarAlwaysOff</enum>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="0">
+         <widget class="Line" name="line_3">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="1">
+         <widget class="Line" name="line_4">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
           </property>
          </widget>
         </item>
