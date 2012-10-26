@@ -151,19 +151,31 @@ void MainWindow::save_img_NW()
 
 void MainWindow::save_img_NE()
 {
-
+    std::cout <<"Save NE..." << std::endl;
+    QString filename;
+    filename = QFileDialog::getSaveFileName(this,
+    tr("Save Image"), "./data/NE.png", tr("Images (*.png *.xpm *.jpg)"));
+    v_imgs[NE].save(filename);
 
 }
 
 void MainWindow::save_img_SW()
 {
-
+    std::cout <<"Save SW..." << std::endl;
+    QString filename;
+    filename = QFileDialog::getSaveFileName(this,
+    tr("Save Image"), "./data/SW.png", tr("Images (*.png *.xpm *.jpg)"));
+    v_imgs[SW].save(filename);
 
 }
 
 void MainWindow::save_img_SE()
 {
-
+    std::cout <<"Save SE..." << std::endl;
+    QString filename;
+    filename = QFileDialog::getSaveFileName(this,
+    tr("Save Image"), "./data/SE.png", tr("Images (*.png *.xpm *.jpg)"));
+    v_imgs[SE].save(filename);
 
 }
 
