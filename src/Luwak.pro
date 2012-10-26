@@ -11,8 +11,13 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp\
-        mainwindow.cpp
+        mainwindow.cpp \
+    imgconvert.cpp
 
-HEADERS  += mainwindow.h
+HEADERS  += mainwindow.h \
+    imgconvert.h
 
 FORMS    += mainwindow.ui
+
+CONFIG += link_pkgconfig
+PKGCONFIG += opencv

@@ -4,6 +4,8 @@
 #include <QMainWindow>
 #include <vector>
 
+#include "imgconvert.h"
+
 
 enum W_pic
 {
@@ -41,6 +43,8 @@ public slots:
 
     //Resize
     void resizeEvent(QResizeEvent *);
+
+    void toGray();
     
 private:
     Ui::MainWindow *ui;
