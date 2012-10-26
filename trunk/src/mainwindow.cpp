@@ -51,6 +51,14 @@ MainWindow::MainWindow(QWidget *parent) :
     m_save->addAction(a_save_SW);
     m_save->addAction(a_save_SE);
 
+    //Tools menu
+    m_file = menuBar()->addMenu(tr("&Tools"));
+
+    //To Grey Menu
+    QAction *a_toGray = new QAction("&Convert to Gray...", this);
+    connect(a_toGray, SIGNAL(triggered()), this, SLOT(toGray()));
+    m_file->addAction(a_toGray);
+
     //Title name
     this->setWindowTitle(QString("Luwak"));
 
@@ -198,4 +206,17 @@ void MainWindow::refresh()
                                ui->graphicsViewSE->height()),
                          Qt::KeepAspectRatio));
     ui->graphicsViewSE->setScene(sceneSE);
+}
+
+void MainWindow::toGray()
+{
+    IplImage *input = ImgConvert::toIplImage(v_imgs[0]);
+    IplImage *output = cvCreateImage( cvSize( input->width, input->height ), IPL_DEPTH_8U, 1);
+    cvCvtColor( input, output, CV_RGB2GRAY );
+    v_imgs[NE] = *ImgConvert::toQImage(output);
+
+    refresh();
+
+    //free(input);
+    //free(output);
 }
