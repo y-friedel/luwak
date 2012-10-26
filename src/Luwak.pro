@@ -2,6 +2,7 @@
 #
 # Project created by QtCreator 2012-10-22T11:39:39
 #
+# Don't forget to clean after using
 #-------------------------------------------------
 
 QT       += core gui

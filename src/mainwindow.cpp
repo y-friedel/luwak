@@ -55,7 +55,7 @@ MainWindow::MainWindow(QWidget *parent) :
     m_file = menuBar()->addMenu(tr("&Tools"));
 
     //To Grey Menu
-    QAction *a_toGray = new QAction("&Convert to Gray...", this);
+    QAction *a_toGray = new QAction("Convert to &Gray", this);
     connect(a_toGray, SIGNAL(triggered()), this, SLOT(toGray()));
     m_file->addAction(a_toGray);
 
@@ -214,7 +214,7 @@ void MainWindow::toGray()
     IplImage *output = cvCreateImage( cvSize( input->width, input->height ), IPL_DEPTH_8U, 1);
     cvCvtColor( input, output, CV_RGB2GRAY );
     v_imgs[NE] = *ImgConvert::toQImage(output);
-
+    ui->l_NE->setText("To Grey");
     refresh();
 
     //free(input);
