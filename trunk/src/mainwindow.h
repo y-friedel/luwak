@@ -45,10 +45,12 @@ public slots:
     void resizeEvent(QResizeEvent *);
 
     void toGray();
+    void set_white_board();
     
 private:
     Ui::MainWindow *ui;
     std::vector<QImage> v_imgs;
+    bool is_white_board;
 };
 
 #endif // MAINWINDOW_H

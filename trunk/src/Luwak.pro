@@ -13,10 +13,12 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
         mainwindow.cpp \
-    imgconvert.cpp
+    imgconvert.cpp \
+    iqgraphicsscene.cpp
 
 HEADERS  += mainwindow.h \
-    imgconvert.h
+    imgconvert.h \
+    iqgraphicsscene.h
 
 FORMS    += mainwindow.ui
 

@@ -1,4 +1,5 @@
 #include "mainwindow.h"
+#include "iqgraphicsscene.h"
 #include "ui_mainwindow.h"
 #include <iostream>
 #include <QFileDialog>
@@ -13,11 +14,12 @@ MainWindow::MainWindow(QWidget *parent) :
     //My Pixmap vector
     v_imgs.resize(4);
 
+    is_white_board = false;
+
     /* ==MENU== */
     //FileMenu
     QMenu* m_file;
     m_file = menuBar()->addMenu(tr("&File"));
-
     //--Open menu
     QAction *a_open = new QAction("&Open...", this);
     connect(a_open, SIGNAL(triggered()), this, SLOT(browse_img()));
@@ -37,12 +39,18 @@ MainWindow::MainWindow(QWidget *parent) :
     QAction *a_save_SE = new QAction("SE...", this);
     connect(a_save_SE, SIGNAL(triggered()), this, SLOT(save_img_SE()));
 
+    //--white board menu
+    QAction *a_white_board = new QAction("&White board", this);
+    connect(a_white_board, SIGNAL(triggered()), this, SLOT(set_white_board()));
+
     //Quit menu
     QAction *a_quit = new QAction("&Quit", this);
     connect(a_quit , SIGNAL(triggered()), qApp, SLOT(quit()));
 
     m_file->addAction(a_open);
     m_file->addMenu(m_save);
+    m_file->addSeparator();
+    m_file->addAction(a_white_board);
     m_file->addSeparator();
     m_file->addAction(a_quit);
 
@@ -78,7 +86,7 @@ void MainWindow::browse_img()
     std::cout <<"Browse..." << std::endl;
     QString filename;
     filename = QFileDialog::getOpenFileName(this,
-    tr("Open Image"), "./data", tr("Image Files (*.png *.jpg *.bmp *.pgm)"));
+    tr("Open Image"), "../data", tr("Image Files (*.png *.jpg *.bmp *.pgm)"));
     std::cout << filename.toStdString() << std::endl;
 
     load_img(filename, NW);
@@ -100,7 +108,7 @@ void MainWindow::load_img(QString filename, W_pic pos)
     {
     case(NW):
         v_imgs[0] = q_img;
-
+        is_white_board = false;
         scene->addPixmap(QPixmap::fromImage(q_img).scaled(
                              QSize(ui->graphicsViewNW->width(),
                                    ui->graphicsViewNW->height()),
@@ -191,7 +199,12 @@ void MainWindow::toNW()
 //TODO cas particulier pour les Images vides
 void MainWindow::refresh()
 {
-    QGraphicsScene* sceneNW = new QGraphicsScene();
+    QGraphicsScene* sceneNW ;
+    if(is_white_board)
+        sceneNW = new IQGraphicsScene();
+    else
+        sceneNW = new QGraphicsScene();
+
     sceneNW->addPixmap(QPixmap::fromImage(v_imgs[0]).scaled(
                          QSize(ui->graphicsViewNW->width(),
                                ui->graphicsViewNW->height()),
@@ -231,4 +244,25 @@ void MainWindow::toGray()
 
     //free(input);
     //free(output);
+}
+
+void MainWindow::set_white_board()
+{
+    IQGraphicsScene* sceneNW;
+    sceneNW = new IQGraphicsScene();
+    QPixmap white = QPixmap(ui->graphicsViewNW->width(), ui->graphicsViewNW->height());
+    QPainter painter(&white);
+    painter.setPen(Qt::white);
+    for(int i = 0; i<white.width(); i++)
+    {
+        for(int j=0; j<white.height(); j++)
+        {
+            painter.drawPoint(i,j);
+        }
+    }
+    sceneNW->addPixmap(white);
+    v_imgs[0] = QImage(white.toImage());
+    ui->graphicsViewNW->setScene(sceneNW);
+    is_white_board = true;
+    ui->l_NW->setText("White Board");
 }
