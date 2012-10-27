@@ -5,7 +5,7 @@ find_package(Qt4 REQUIRED)
 find_package(OpenCV REQUIRED)
 
 set(EXECUTABLE_OUTPUT_PATH bin)
-set(Qt_HEADERS src/mainwindow.h)
+set(Qt_HEADERS src/mainwindow.h ./src/iqgraphicsscene.h)
 set(Qt_FORMS src/mainwindow.ui)
 
 
