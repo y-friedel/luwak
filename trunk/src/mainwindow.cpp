@@ -14,7 +14,7 @@ MainWindow::MainWindow(QWidget *parent) :
     //My Pixmap vector
     v_imgs.resize(4);
 
-    is_white_board = false;
+    is_m_outline = false;
 
     /* ==MENU== */
     //FileMenu
@@ -40,8 +40,8 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(a_save_SE, SIGNAL(triggered()), this, SLOT(save_img_SE()));
 
     //--white board menu
-    QAction *a_white_board = new QAction("&White board", this);
-    connect(a_white_board, SIGNAL(triggered()), this, SLOT(set_white_board()));
+    QAction *a_mode_outline = new QAction("Outline mode", this);
+    connect(a_mode_outline, SIGNAL(triggered()), this, SLOT(mode_outline()));
 
     //Quit menu
     QAction *a_quit = new QAction("&Quit", this);
@@ -50,7 +50,7 @@ MainWindow::MainWindow(QWidget *parent) :
     m_file->addAction(a_open);
     m_file->addMenu(m_save);
     m_file->addSeparator();
-    m_file->addAction(a_white_board);
+    m_file->addAction(a_mode_outline);
     m_file->addSeparator();
     m_file->addAction(a_quit);
 
@@ -108,7 +108,7 @@ void MainWindow::load_img(QString filename, W_pic pos)
     {
     case(NW):
         v_imgs[0] = q_img;
-        is_white_board = false;
+        is_m_outline = false;
         scene->addPixmap(QPixmap::fromImage(q_img).scaled(
                              QSize(ui->graphicsViewNW->width(),
                                    ui->graphicsViewNW->height()),
@@ -200,7 +200,7 @@ void MainWindow::toNW()
 void MainWindow::refresh()
 {
     QGraphicsScene* sceneNW ;
-    if(is_white_board)
+    if(is_m_outline)
         sceneNW = new IQGraphicsScene();
     else
         sceneNW = new QGraphicsScene();
@@ -246,13 +246,13 @@ void MainWindow::toGray()
     //free(output);
 }
 
-void MainWindow::set_white_board()
+void MainWindow::mode_outline()
 {
     IQGraphicsScene* sceneNW;
     sceneNW = new IQGraphicsScene();
     QPixmap white = QPixmap(ui->graphicsViewNW->width(), ui->graphicsViewNW->height());
     QPainter painter(&white);
-    painter.setPen(Qt::white);
+    painter.setPen(QColor(240,255,240));
     for(int i = 0; i<white.width(); i++)
     {
         for(int j=0; j<white.height(); j++)
@@ -263,6 +263,6 @@ void MainWindow::set_white_board()
     sceneNW->addPixmap(white);
     v_imgs[0] = QImage(white.toImage());
     ui->graphicsViewNW->setScene(sceneNW);
-    is_white_board = true;
+    is_m_outline = true;
     ui->l_NW->setText("White Board");
 }
