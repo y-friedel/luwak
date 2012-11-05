@@ -45,12 +45,12 @@ public slots:
     void resizeEvent(QResizeEvent *);
 
     void toGray();
-    void set_white_board();
+    void mode_outline();
     
 private:
     Ui::MainWindow *ui;
     std::vector<QImage> v_imgs;
-    bool is_white_board;
+    bool is_m_outline;
 };
 
 #endif // MAINWINDOW_H
