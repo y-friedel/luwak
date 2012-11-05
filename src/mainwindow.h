@@ -49,7 +49,7 @@ public slots:
     
 private:
     Ui::MainWindow *ui;
-    std::vector<QImage> v_imgs;
+    std::vector<QImage*> v_imgs;
     bool is_m_outline;
 };
 

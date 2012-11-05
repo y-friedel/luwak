@@ -2,11 +2,10 @@
 #define IQGRAPHICSSCENE_H
 
 #include <QGraphicsSceneMouseEvent>
-#include <QGraphicsScene>
-#include <QGraphicsScene>
+#include "wqgraphicsscene.h"
 #include <vector>
 
-class IQGraphicsScene : public QGraphicsScene
+class IQGraphicsScene : public WQGraphicsScene
 {
         Q_OBJECT
 protected:
@@ -14,6 +13,7 @@ protected:
 
 public slots:
     void mouseReleaseEvent(double, double);
+    void save();
 
 private:
     std::vector<int> v_pixels;

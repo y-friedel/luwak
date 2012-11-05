@@ -3,7 +3,7 @@
 #include "ui_mainwindow.h"
 #include <iostream>
 #include <QFileDialog>
-#include <QGraphicsScene>
+#include "wqgraphicsscene.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -101,15 +101,15 @@ void MainWindow::resizeEvent(QResizeEvent *)
 
 void MainWindow::load_img(QString filename, W_pic pos)
 {
-    QImage q_img;
-    q_img.load(filename);
-    QGraphicsScene* scene = new QGraphicsScene();
+    QImage* q_img = new QImage();
+    q_img->load(filename);
+    WQGraphicsScene* scene = new WQGraphicsScene(0, q_img);
     switch(pos)
     {
     case(NW):
         v_imgs[0] = q_img;
         is_m_outline = false;
-        scene->addPixmap(QPixmap::fromImage(q_img).scaled(
+        scene->addPixmap(QPixmap::fromImage(*q_img).scaled(
                              QSize(ui->graphicsViewNW->width(),
                                    ui->graphicsViewNW->height()),
                              Qt::KeepAspectRatio));
@@ -119,7 +119,7 @@ void MainWindow::load_img(QString filename, W_pic pos)
     case(NE):
         v_imgs[1] = q_img;
 
-        scene->addPixmap(QPixmap::fromImage(q_img).scaled(
+        scene->addPixmap(QPixmap::fromImage(*q_img).scaled(
                              QSize(ui->graphicsViewNE->width(),
                                    ui->graphicsViewNE->height()),
                              Qt::KeepAspectRatio));
@@ -129,7 +129,7 @@ void MainWindow::load_img(QString filename, W_pic pos)
     case(SW):
         v_imgs[2] = q_img;
 
-        scene->addPixmap(QPixmap::fromImage(q_img).scaled(
+        scene->addPixmap(QPixmap::fromImage(*q_img).scaled(
                              QSize(ui->graphicsViewSW->width(),
                                    ui->graphicsViewSW->height()),
                              Qt::KeepAspectRatio));
@@ -139,7 +139,7 @@ void MainWindow::load_img(QString filename, W_pic pos)
     case(SE):
         v_imgs[3] = q_img;
 
-        scene->addPixmap(QPixmap::fromImage(q_img).scaled(
+        scene->addPixmap(QPixmap::fromImage(*q_img).scaled(
                              QSize(ui->graphicsViewSE->width(),
                                    ui->graphicsViewSE->height()),
                              Qt::KeepAspectRatio));
@@ -154,7 +154,7 @@ void MainWindow::save_img_NW()
         QString filename;
         filename = QFileDialog::getSaveFileName(this,
         tr("Save Image"), "./data/NW.png", tr("Images (*.png *.xpm *.jpg)"));
-        v_imgs[NW].save(filename);
+        v_imgs[NW]->save(filename);
 }
 
 void MainWindow::save_img_NE()
@@ -163,7 +163,7 @@ void MainWindow::save_img_NE()
     QString filename;
     filename = QFileDialog::getSaveFileName(this,
     tr("Save Image"), "./data/NE.png", tr("Images (*.png *.xpm *.jpg)"));
-    v_imgs[NE].save(filename);
+    v_imgs[NE]->save(filename);
 
 }
 
@@ -173,7 +173,7 @@ void MainWindow::save_img_SW()
     QString filename;
     filename = QFileDialog::getSaveFileName(this,
     tr("Save Image"), "./data/SW.png", tr("Images (*.png *.xpm *.jpg)"));
-    v_imgs[SW].save(filename);
+    v_imgs[SW]->save(filename);
 
 }
 
@@ -183,7 +183,7 @@ void MainWindow::save_img_SE()
     QString filename;
     filename = QFileDialog::getSaveFileName(this,
     tr("Save Image"), "./data/SE.png", tr("Images (*.png *.xpm *.jpg)"));
-    v_imgs[SE].save(filename);
+    v_imgs[SE]->save(filename);
 
 }
 
@@ -196,49 +196,58 @@ void MainWindow::toNW()
     refresh();
 }
 
-//TODO cas particulier pour les Images vides
 void MainWindow::refresh()
 {
-    QGraphicsScene* sceneNW ;
+    WQGraphicsScene* sceneNW ;
     if(is_m_outline)
         sceneNW = new IQGraphicsScene();
-    else
-        sceneNW = new QGraphicsScene();
+    else if(v_imgs[0] != NULL)
+    {
+        sceneNW = new WQGraphicsScene(0, v_imgs[0]);
+        sceneNW->addPixmap(QPixmap::fromImage(*v_imgs[0]).scaled(
+                     QSize(ui->graphicsViewNW->width(),
+                           ui->graphicsViewNW->height()),
+                     Qt::KeepAspectRatio));
+        ui->graphicsViewNW->setScene(sceneNW);
+    }
 
-    sceneNW->addPixmap(QPixmap::fromImage(v_imgs[0]).scaled(
-                         QSize(ui->graphicsViewNW->width(),
-                               ui->graphicsViewNW->height()),
-                         Qt::KeepAspectRatio));
-    ui->graphicsViewNW->setScene(sceneNW);
+    if(v_imgs[1] != NULL)
+    {
+        QGraphicsScene* sceneNE = new WQGraphicsScene(0, v_imgs[1]);
+        sceneNE->addPixmap(QPixmap::fromImage(*v_imgs[1]).scaled(
+                             QSize(ui->graphicsViewNE->width(),
+                                   ui->graphicsViewNE->height()),
+                             Qt::KeepAspectRatio));
+        ui->graphicsViewNE->setScene(sceneNE);
+    }
 
-    QGraphicsScene* sceneNE = new QGraphicsScene();
-    sceneNE->addPixmap(QPixmap::fromImage(v_imgs[1]).scaled(
-                         QSize(ui->graphicsViewNE->width(),
-                               ui->graphicsViewNE->height()),
-                         Qt::KeepAspectRatio));
-    ui->graphicsViewNE->setScene(sceneNE);
+    if(v_imgs[2] != NULL)
+    {
+        QGraphicsScene* sceneSW = new WQGraphicsScene(0, v_imgs[2]);
+        sceneSW->addPixmap(QPixmap::fromImage(*v_imgs[2]).scaled(
+                             QSize(ui->graphicsViewSW->width(),
+                                   ui->graphicsViewSW->height()),
+                             Qt::KeepAspectRatio));
+        ui->graphicsViewSW->setScene(sceneSW);
+    }
 
-    QGraphicsScene* sceneSW = new QGraphicsScene();
-    sceneSW->addPixmap(QPixmap::fromImage(v_imgs[2]).scaled(
-                         QSize(ui->graphicsViewSW->width(),
-                               ui->graphicsViewSW->height()),
-                         Qt::KeepAspectRatio));
-    ui->graphicsViewSW->setScene(sceneSW);
-
-    QGraphicsScene* sceneSE = new QGraphicsScene();
-    sceneSE->addPixmap(QPixmap::fromImage(v_imgs[3]).scaled(
-                         QSize(ui->graphicsViewSE->width(),
-                               ui->graphicsViewSE->height()),
-                         Qt::KeepAspectRatio));
-    ui->graphicsViewSE->setScene(sceneSE);
+    if(v_imgs[3] != NULL)
+    {
+        QGraphicsScene* sceneSE = new WQGraphicsScene(0, v_imgs[3]);
+        sceneSE->addPixmap(QPixmap::fromImage(*v_imgs[3]).scaled(
+                             QSize(ui->graphicsViewSE->width(),
+                                   ui->graphicsViewSE->height()),
+                             Qt::KeepAspectRatio));
+        ui->graphicsViewSE->setScene(sceneSE);
+    }
 }
 
 void MainWindow::toGray()
 {
-    IplImage *input = ImgConvert::toIplImage(v_imgs[0]);
+    IplImage *input = ImgConvert::toIplImage(*v_imgs[0]);
     IplImage *output = cvCreateImage( cvSize( input->width, input->height ), IPL_DEPTH_8U, 1);
     cvCvtColor( input, output, CV_RGB2GRAY );
-    v_imgs[NE] = *ImgConvert::toQImage(output);
+    v_imgs[NE] = ImgConvert::toQImage(output);
     ui->l_NE->setText("To Grey");
     refresh();
 
@@ -261,7 +270,7 @@ void MainWindow::mode_outline()
         }
     }
     sceneNW->addPixmap(white);
-    v_imgs[0] = QImage(white.toImage());
+    v_imgs[0] = new QImage(white.toImage());
     ui->graphicsViewNW->setScene(sceneNW);
     is_m_outline = true;
     ui->l_NW->setText("White Board");

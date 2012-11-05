@@ -14,13 +14,18 @@ TEMPLATE = app
 SOURCES += main.cpp\
         mainwindow.cpp \
     imgconvert.cpp \
-    iqgraphicsscene.cpp
+    iqgraphicsscene.cpp \
+    wqgraphicsscene.cpp \
+    fullimg.cpp
 
 HEADERS  += mainwindow.h \
     imgconvert.h \
-    iqgraphicsscene.h
+    iqgraphicsscene.h \
+    wqgraphicsscene.h \
+    fullimg.h
 
-FORMS    += mainwindow.ui
+FORMS    += mainwindow.ui \
+    fullimg.ui
 
 CONFIG += link_pkgconfig
 PKGCONFIG += opencv
