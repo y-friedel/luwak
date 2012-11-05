@@ -1,10 +1,28 @@
 #include "iqgraphicsscene.h"
 #include <iostream>
+#include <QMenu>
 
 void IQGraphicsScene::mouseReleaseEvent ( QGraphicsSceneMouseEvent * mouseEvent ){
-    double x = mouseEvent->scenePos().x();
-    double y = mouseEvent->scenePos().y();
-    emit mouseReleaseEvent(x,y);
+    if(mouseEvent->button()==Qt::LeftButton)
+    {
+        double x = mouseEvent->scenePos().x();
+        double y = mouseEvent->scenePos().y();
+        emit mouseReleaseEvent(x,y);
+    }
+    else if(mouseEvent->button()==Qt::RightButton)
+    {
+        std::cout << "right click" << std::endl;
+        QMenu * menu = new QMenu("Im_menu");
+
+        QAction *a_open = new QAction("&Save image...", this);
+        connect(a_open, SIGNAL(triggered()), this, SLOT(save()));
+
+        menu->addAction(a_open);
+
+        // ajout des actions
+        menu->move(mouseEvent->screenPos().x(), mouseEvent->screenPos().y());
+        menu->show();
+    }
 }
 
 
@@ -39,4 +57,9 @@ void IQGraphicsScene::mouseReleaseEvent(double x, double y)
         v_pixels.push_back((int)y);
     }
     update(0,0,1000,1000);
+}
+
+void IQGraphicsScene::save()
+{
+    std::cout << "save" << std::endl;
 }
