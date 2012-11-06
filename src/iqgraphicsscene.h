@@ -12,11 +12,13 @@ protected:
     void mouseReleaseEvent( QGraphicsSceneMouseEvent * mouseEvent );
 
 public slots:
-    void mouseReleaseEvent(double, double);
+    void leftMouseReleaseEvent(double, double);
+    void rightMouseReleaseEvent(double, double);
     void save();
+    void load();
 
 private:
-    std::vector<int> v_pixels;
+    std::vector<double> v_pixels;
 };
 
 #endif // IQGRAPHICSSCENE_H
