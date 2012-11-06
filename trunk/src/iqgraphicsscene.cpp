@@ -1,5 +1,6 @@
 #include "iqgraphicsscene.h"
 #include "contour.h" 
+#include "fourier.h" 
 #include <iostream>
 #include <QMenu>
 #include <QFileDialog>
@@ -46,7 +47,7 @@ void IQGraphicsScene::leftMouseReleaseEvent(double x, double y)
             removeItem(items()[i]);
         }
 
-        this->addLine(x-.1, y-.1, x, y);
+        addRect(x-.1, y-.1, 2, 2);
     }else{
         for(int i=0; i < items().size(); i++)
     	{
@@ -55,8 +56,11 @@ void IQGraphicsScene::leftMouseReleaseEvent(double x, double y)
 
     	for(unsigned int i=0; i<v_pixels.size()/2 - 1; i++)
     	{
+            addRect(v_pixels[2*i]-0.1, v_pixels[2*i+1]-0.1, 2, 2);
     		addLine(v_pixels[2*i], v_pixels[2*i+1], v_pixels[2*i+2], v_pixels[2*i+3]);
     	}
+        addRect(x-.1, y-.1, 2, 2);
+        addRect(v_pixels[v_pixels.size()-2]-.1, v_pixels[v_pixels.size()-1]-.1, 2, 2);
     	addLine(x, y, v_pixels[v_pixels.size()-2], v_pixels[v_pixels.size()-1]);
         addLine(x, y, v_pixels[0], v_pixels[1]);
     	
@@ -77,8 +81,13 @@ void IQGraphicsScene::rightMouseReleaseEvent(double x, double y)
     QAction *a_load = new QAction("Open outline...", this);
     connect(a_load, SIGNAL(triggered()), this, SLOT(load()));
 
+    QAction *a_fourier = new QAction("To Fourier", this);
+    connect(a_fourier, SIGNAL(triggered()), this, SLOT(to_fourier()));
+
     menu->addAction(a_save);
     menu->addAction(a_load);
+    menu->addAction(a_fourier);
+    
 
     // ajout des actions
     menu->move(x, y);
@@ -100,7 +109,7 @@ void IQGraphicsScene::load()
     std::cout <<"Browse..." << std::endl;
     QString filename;
     filename = QFileDialog::getOpenFileName(0,
-    tr("Open outline"), "../data", tr("Image Files (*.txt)"));
+    tr("Open outline"), "./data", tr("Image Files (*.txt)"));
     Contour::load(filename.toStdString(), v_pixels);
 
     for(int i=0; i < items().size(); i++)
@@ -110,9 +119,24 @@ void IQGraphicsScene::load()
 
     for(unsigned int i=0; i<v_pixels.size()/2 - 1; i++)
     {
+        addRect(v_pixels[2*i]-0.1, v_pixels[2*i+1]-0.1, 2, 2);
         addLine(v_pixels[2*i], v_pixels[2*i+1], v_pixels[2*i+2], v_pixels[2*i+3]);
     }
 
     addLine(v_pixels[v_pixels.size()-2], v_pixels[v_pixels.size()-1], v_pixels[0], v_pixels[1]);
 
+}
+
+void IQGraphicsScene::to_fourier()
+{
+    std::cout << "To Fourier" << std::endl;
+    Contour c = Contour(v_pixels);
+    Fourier f = Fourier(c);
+    std::vector<double> test = std::vector<double>();
+    f.to_double(test);
+    Contour c2 = Contour(test);
+    c2.save("fou.txt");
+    Contour c_rep;
+    f.invertFourier(c_rep);
+    c_rep.save("barre.txt");
 }

@@ -19,7 +19,7 @@ public:
     void ajout_point(double reel, double imag);
 
     
-    const std::complex<double>& getValeur(int i);
+    const std::complex<double>& getValeur(int i) const;
     int getTaille() const;
 
     void load(const std::string filename);
