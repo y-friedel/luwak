@@ -22,7 +22,7 @@ public:
 
     void to_double (std::vector<double>& v_pixels) const;
     
-protected:
+public:
 	std::vector<std::complex<double> > v_complex_fourier;
 };
 

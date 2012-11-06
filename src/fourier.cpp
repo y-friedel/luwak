@@ -43,7 +43,7 @@ void Fourier::setFourier(const Contour& c)
 			//std::cout << c.getValeur(j) << std::endl;
 		}
 		v_complex_fourier[i] = c_sum / (double)N;
-		//std::cout << "FOURIER " << v_complex_fourier[i] << std::endl;
+        std::cout << "FOURIER " << v_complex_fourier[i] << std::endl;
 	}
 }
 
@@ -55,7 +55,7 @@ void Fourier::invertFourier(Contour& c)
 	for(unsigned int i = 0; i < N; i++)
 	{
 		vec_circle.push_back(std::polar(1., 2*M_PI*i/N));
-		std::cout << vec_circle[i] << std::endl;
+        //std::cout << vec_circle[i] << std::endl;
 	}
 
 	v_comp.resize(N);

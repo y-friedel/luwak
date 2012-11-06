@@ -20,7 +20,7 @@ public:
 
     
     const std::complex<double>& getValeur(int i) const;
-    int getTaille() const;
+    unsigned int getTaille() const;
 
     void load(const std::string filename);
     void save(const std::string filename);

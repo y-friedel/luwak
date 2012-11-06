@@ -45,11 +45,21 @@ public slots:
     void resizeEvent(QResizeEvent *);
 
     void toGray();
+    void fourier();
+
     void mode_outline();
+    void update_pixels(const std::vector<double>&);
+
+    void full_img(int pos);
+    void full_img_NW();
+    void full_img_NE();
+    void full_img_SW();
+    void full_img_SE();
     
 private:
     Ui::MainWindow *ui;
     std::vector<QImage*> v_imgs;
+    std::vector<double> v_outline;
     bool is_m_outline;
 };
 

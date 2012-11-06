@@ -4,6 +4,10 @@
 #include <iostream>
 #include <QFileDialog>
 #include "wqgraphicsscene.h"
+#include "fullimg.h"
+
+#include "contour.h"
+#include "fourier.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -13,6 +17,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
     //My Pixmap vector
     v_imgs.resize(4);
+    v_outline = std::vector<double>();
+
 
     is_m_outline = false;
 
@@ -103,49 +109,25 @@ void MainWindow::load_img(QString filename, W_pic pos)
 {
     QImage* q_img = new QImage();
     q_img->load(filename);
-    WQGraphicsScene* scene = new WQGraphicsScene(0, q_img);
     switch(pos)
     {
     case(NW):
         v_imgs[0] = q_img;
-        is_m_outline = false;
-        scene->addPixmap(QPixmap::fromImage(*q_img).scaled(
-                             QSize(ui->graphicsViewNW->width(),
-                                   ui->graphicsViewNW->height()),
-                             Qt::KeepAspectRatio));
-        ui->graphicsViewNW->setScene(scene);
         break;
 
     case(NE):
         v_imgs[1] = q_img;
-
-        scene->addPixmap(QPixmap::fromImage(*q_img).scaled(
-                             QSize(ui->graphicsViewNE->width(),
-                                   ui->graphicsViewNE->height()),
-                             Qt::KeepAspectRatio));
-        ui->graphicsViewNE->setScene(scene);
         break;
 
     case(SW):
         v_imgs[2] = q_img;
-
-        scene->addPixmap(QPixmap::fromImage(*q_img).scaled(
-                             QSize(ui->graphicsViewSW->width(),
-                                   ui->graphicsViewSW->height()),
-                             Qt::KeepAspectRatio));
-        ui->graphicsViewSW->setScene(scene);
         break;
 
     case(SE):
         v_imgs[3] = q_img;
-
-        scene->addPixmap(QPixmap::fromImage(*q_img).scaled(
-                             QSize(ui->graphicsViewSE->width(),
-                                   ui->graphicsViewSE->height()),
-                             Qt::KeepAspectRatio));
-        ui->graphicsViewSE->setScene(scene);
         break;
     }
+    refresh();
 }
 
 void MainWindow::save_img_NW()
@@ -198,47 +180,69 @@ void MainWindow::toNW()
 
 void MainWindow::refresh()
 {
-    WQGraphicsScene* sceneNW ;
+
     if(is_m_outline)
+    {
+        IQGraphicsScene* sceneNW ;
         sceneNW = new IQGraphicsScene();
+        //Connect with scene menu
+        connect(sceneNW, SIGNAL(s_update_pixels(const std::vector<double>&)), this, SLOT(update_pixels(const std::vector<double>&)));
+    }
     else if(v_imgs[0] != NULL)
     {
-        sceneNW = new WQGraphicsScene(0, v_imgs[0]);
+        WQGraphicsScene* sceneNW ;
+        sceneNW = new WQGraphicsScene();
         sceneNW->addPixmap(QPixmap::fromImage(*v_imgs[0]).scaled(
                      QSize(ui->graphicsViewNW->width(),
                            ui->graphicsViewNW->height()),
                      Qt::KeepAspectRatio));
         ui->graphicsViewNW->setScene(sceneNW);
+
+        //Connect with scene menu
+        connect(sceneNW, SIGNAL(s_save()), this, SLOT(save_img_NW()));
+        connect(sceneNW, SIGNAL(s_full_img()), this, SLOT(full_img_NW()));
     }
 
     if(v_imgs[1] != NULL)
     {
-        QGraphicsScene* sceneNE = new WQGraphicsScene(0, v_imgs[1]);
+        QGraphicsScene* sceneNE = new WQGraphicsScene();
         sceneNE->addPixmap(QPixmap::fromImage(*v_imgs[1]).scaled(
                              QSize(ui->graphicsViewNE->width(),
                                    ui->graphicsViewNE->height()),
                              Qt::KeepAspectRatio));
         ui->graphicsViewNE->setScene(sceneNE);
+
+        //Connect with scene menu
+        connect(sceneNE, SIGNAL(s_save()), this, SLOT(save_img_NE()));
+        connect(sceneNE, SIGNAL(s_full_img()), this, SLOT(full_img_NE()));
     }
 
     if(v_imgs[2] != NULL)
     {
-        QGraphicsScene* sceneSW = new WQGraphicsScene(0, v_imgs[2]);
+        QGraphicsScene* sceneSW = new WQGraphicsScene();
         sceneSW->addPixmap(QPixmap::fromImage(*v_imgs[2]).scaled(
                              QSize(ui->graphicsViewSW->width(),
                                    ui->graphicsViewSW->height()),
                              Qt::KeepAspectRatio));
         ui->graphicsViewSW->setScene(sceneSW);
+
+        //Connect with scene menu
+        connect(sceneSW, SIGNAL(s_save()), this, SLOT(save_img_SW()));
+        connect(sceneSW, SIGNAL(s_full_img()), this, SLOT(full_img_SW()));
     }
 
     if(v_imgs[3] != NULL)
     {
-        QGraphicsScene* sceneSE = new WQGraphicsScene(0, v_imgs[3]);
+        QGraphicsScene* sceneSE = new WQGraphicsScene();
         sceneSE->addPixmap(QPixmap::fromImage(*v_imgs[3]).scaled(
                              QSize(ui->graphicsViewSE->width(),
                                    ui->graphicsViewSE->height()),
                              Qt::KeepAspectRatio));
         ui->graphicsViewSE->setScene(sceneSE);
+
+        //Connect with scene menu
+        connect(sceneSE, SIGNAL(s_save()), this, SLOT(save_img_SE()));
+        connect(sceneSE, SIGNAL(s_full_img()), this, SLOT(full_img_SE()));
     }
 }
 
@@ -253,6 +257,50 @@ void MainWindow::toGray()
 
     //free(input);
     //free(output);
+}
+
+void MainWindow::fourier()
+{
+    std::cout << "Fourier" << std::endl;
+
+    Contour c = Contour(v_outline);
+    Fourier fourier = Fourier(c);
+    std::vector<double> f_pts = std::vector<double>();
+    fourier.to_double(f_pts);
+
+    //Affichage Fourier
+    QImage* im_freq = new QImage(ui->graphicsViewNE->width(), ui->graphicsViewNE->height(), QImage::Format_Mono);
+    im_freq->fill(Qt::darkBlue);
+    for(unsigned int i=0; i<f_pts.size()/2; i++)
+    {
+        im_freq->setPixel(
+                    QPoint(
+                        (int)f_pts[2*i] /*+ ui->graphicsViewNW->width()/2*/,
+                        (int)f_pts[2*i+1] /*+ ui->graphicsViewNW->height()/2*/),
+                    1);
+    }
+
+    v_imgs[NE] = im_freq;
+
+    Contour c_rep;
+    fourier.invertFourier(c_rep);
+
+    //Affichage inverse fourier
+
+    QImage* im_ret = new QImage(ui->graphicsViewSW->width(), ui->graphicsViewSW->height(), QImage::Format_Mono);
+    im_ret->fill(Qt::darkBlue);
+    for(unsigned int i=0; i<c_rep.getTaille(); i++)
+    {
+        im_ret->setPixel(
+                    QPoint(
+                        (int)real(c_rep.getValeur(i)) /*+ ui->graphicsViewNW->width()/2*/,
+                        (int)imag(c_rep.getValeur(i)) /*+ ui->graphicsViewNW->height()/2*/),
+                    1);
+    }
+    v_imgs[SW] = im_ret;
+
+        refresh();
+
 }
 
 void MainWindow::mode_outline()
@@ -274,4 +322,41 @@ void MainWindow::mode_outline()
     ui->graphicsViewNW->setScene(sceneNW);
     is_m_outline = true;
     ui->l_NW->setText("White Board");
+    connect(sceneNW, SIGNAL(s_update_pixels(const std::vector<double>&)), this, SLOT(update_pixels(const std::vector<double>&)));
+    connect(sceneNW, SIGNAL(s_fourier()), this, SLOT(fourier()));
+}
+
+void MainWindow::update_pixels(const std::vector<double>& v_pix)
+{
+    v_outline.resize(v_pix.size());
+    copy(v_pix.begin(), v_pix.end(), v_outline.begin());
+}
+
+
+
+void MainWindow::full_img(int pos)
+{
+    std::cout << "Full View" << std::endl;
+    FullImg* fi = new FullImg(v_imgs[pos]);
+    fi->show();
+}
+
+void MainWindow::full_img_NW()
+{
+    full_img(NW);
+}
+
+void MainWindow::full_img_NE()
+{
+    full_img(NE);
+}
+
+void MainWindow::full_img_SW()
+{
+    full_img(SW);
+}
+
+void MainWindow::full_img_SE()
+{
+    full_img(SE);
 }
