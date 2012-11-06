@@ -43,7 +43,7 @@
     }
 
     
-    const std::complex<double>& Contour::getValeur(int i)
+    const std::complex<double>& Contour::getValeur(int i) const
     {
     	return v_complex[i];
     }

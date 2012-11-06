@@ -16,6 +16,7 @@ public slots:
     void rightMouseReleaseEvent(double, double);
     void save();
     void load();
+    void to_fourier();
 
 private:
     std::vector<double> v_pixels;
