@@ -16,13 +16,17 @@ SOURCES += main.cpp\
     imgconvert.cpp \
     iqgraphicsscene.cpp \
     wqgraphicsscene.cpp \
-    fullimg.cpp
+    fullimg.cpp \
+    fourier.cpp \
+    contour.cpp
 
 HEADERS  += mainwindow.h \
     imgconvert.h \
     iqgraphicsscene.h \
     wqgraphicsscene.h \
-    fullimg.h
+    fullimg.h \
+    fourier.h \
+    contour.h
 
 FORMS    += mainwindow.ui \
     fullimg.ui

@@ -16,7 +16,10 @@ public slots:
     void rightMouseReleaseEvent(double, double);
     void save();
     void load();
-    void to_fourier();
+
+signals:
+    void s_fourier();
+    void s_update_pixels(const std::vector<double>&);
 
 private:
     std::vector<double> v_pixels;

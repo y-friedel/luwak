@@ -16,21 +16,6 @@ void IQGraphicsScene::mouseReleaseEvent ( QGraphicsSceneMouseEvent * mouseEvent 
     {
         emit rightMouseReleaseEvent(mouseEvent->screenPos().x(), mouseEvent->screenPos().y());
     }
-
-        /*if(mouseEvent->button()==Qt::RightButton)
-    {
-        std::cout << "right click" << std::endl;
-        QMenu * menu = new QMenu("Im_menu");
-
-        QAction *a_open = new QAction("&Save image...", this);
-        connect(a_open, SIGNAL(triggered()), this, SLOT(save()));
-
-        menu->addAction(a_open);
-
-        // ajout des actions
-        menu->move(mouseEvent->screenPos().x(), mouseEvent->screenPos().y());
-        menu->show();
-    }*/
 }
 
 
@@ -68,6 +53,7 @@ void IQGraphicsScene::leftMouseReleaseEvent(double x, double y)
         v_pixels.push_back((double)y);
     }
     update(0,0,1000,1000);
+    emit(s_update_pixels(v_pixels));
 }
 
 void IQGraphicsScene::rightMouseReleaseEvent(double x, double y)
@@ -82,7 +68,7 @@ void IQGraphicsScene::rightMouseReleaseEvent(double x, double y)
     connect(a_load, SIGNAL(triggered()), this, SLOT(load()));
 
     QAction *a_fourier = new QAction("To Fourier", this);
-    connect(a_fourier, SIGNAL(triggered()), this, SLOT(to_fourier()));
+    connect(a_fourier, SIGNAL(triggered()), this, SIGNAL(s_fourier()));
 
     menu->addAction(a_save);
     menu->addAction(a_load);
@@ -124,19 +110,21 @@ void IQGraphicsScene::load()
     }
 
     addLine(v_pixels[v_pixels.size()-2], v_pixels[v_pixels.size()-1], v_pixels[0], v_pixels[1]);
-
+    emit(s_update_pixels(v_pixels));
 }
 
-void IQGraphicsScene::to_fourier()
-{
-    std::cout << "To Fourier" << std::endl;
-    Contour c = Contour(v_pixels);
-    Fourier f = Fourier(c);
-    std::vector<double> test = std::vector<double>();
-    f.to_double(test);
-    Contour c2 = Contour(test);
-    c2.save("fou.txt");
-    Contour c_rep;
-    f.invertFourier(c_rep);
-    c_rep.save("barre.txt");
-}
+//void IQGraphicsScene::to_fourier()
+//{
+//    std::cout << "To Fourier" << std::endl;
+//    Contour c = Contour(v_pixels);
+//    Fourier f = Fourier(c);
+//    std::vector<double> test = std::vector<double>();
+//    f.to_double(test);
+//    Contour c2 = Contour(test);
+//    c2.save("fou.txt");
+//    Contour c_rep;
+//    f.invertFourier(c_rep);
+//    c_rep.save("barre.txt");
+//}
+
+//void IQGraphicsScene::s_update_pixels(const std::vector<double> v_pixels)

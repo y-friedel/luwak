@@ -29,7 +29,7 @@
 
     Contour::Contour(const std::string filename)
     {
-        //load(filename);
+        load(filename);
     }
     
     void Contour::ajout_point(const std::complex<double>& c)
@@ -48,7 +48,7 @@
     	return v_complex[i];
     }
 
-    int Contour::getTaille() const
+    unsigned int Contour::getTaille() const
     {
     	return v_complex.size();
     }

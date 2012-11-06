@@ -10,16 +10,13 @@ class WQGraphicsScene : public QGraphicsScene
     Q_OBJECT
 public:
     explicit WQGraphicsScene(QObject *parent = 0);
-    WQGraphicsScene(QObject *parent, QImage* img);
 
 protected:
 void mouseReleaseEvent( QGraphicsSceneMouseEvent * mouseEvent );
-QImage * img;
 
-public slots:
-void rightMouseReleaseEvent(double, double);
-void save();
-void full_view();
+signals:
+void s_save();
+void s_full_img();
     
 };
 
