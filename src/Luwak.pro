@@ -18,7 +18,8 @@ SOURCES += main.cpp\
     wqgraphicsscene.cpp \
     fullimg.cpp \
     fourier.cpp \
-    contour.cpp
+    contour.cpp \
+    papillon.cpp
 
 HEADERS  += mainwindow.h \
     imgconvert.h \
@@ -26,10 +27,14 @@ HEADERS  += mainwindow.h \
     wqgraphicsscene.h \
     fullimg.h \
     fourier.h \
-    contour.h
+    contour.h \
+    papillon.h
 
 FORMS    += mainwindow.ui \
     fullimg.ui
 
 CONFIG += link_pkgconfig
 PKGCONFIG += opencv
+
+OTHER_FILES += \
+    barre.txt
