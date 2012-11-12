@@ -6,7 +6,6 @@
 
 #include "imgconvert.h"
 
-
 enum W_pic
 {
     NW,

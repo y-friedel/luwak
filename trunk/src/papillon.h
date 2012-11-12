@@ -35,6 +35,8 @@ public:
 
 	void setPixel(const std::complex<double>& value, int x, int y);
 
+    static unsigned int ret_int(unsigned int my_integer, unsigned int size);
+
 public:
 	std::vector< std::complex<double> > v_fpapillon;
 	unsigned int _height;

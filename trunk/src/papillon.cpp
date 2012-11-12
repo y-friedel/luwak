@@ -51,31 +51,64 @@
     	v_fpapillon[x + _n_size*y] = value;
     }
 
-    // unsigned int ret_int(unsigned int my_integer, int size)
-    // {
-    // 	unsigned int output;
-    // 	bool temp;
-    // 	for(int i=0; i< size; i++)
-    // 	{
-    // 		my_integer >> temp; 
-    // 		temp >> output;
-    // 	}
-    // }
+     unsigned int FPapillon::ret_int(unsigned int my_integer, unsigned int size)
+     {
+        unsigned int output = my_integer%2;
+        for(unsigned int i=0; i< size; i++)
+        {
+            output <<= 1;
+            my_integer >>= 1;
+            output += my_integer%2;
+        }
+        return output;
+     }
 
     void FPapillon::setFPapillon1D(unsigned int num, bool colonne)
     {
     	//Descente
     	std::vector<std::complex<double> > v_temp = std::vector<std::complex<double> >(_n_size);
-    	unsigned int i_modif;
+
+        //On calcule le nb de bits utiles de _n_size
+        unsigned int nb_bits_utiles = 0;
+        unsigned int temp = _n_size;
+        while(temp !=0)
+        {
+            temp >>=1;
+            nb_bits_utiles++;
+        }
+
+        //On ordonne les elements du tableau a l'aide de ret_int
     	for(unsigned int i=0; i<_n_size; i++)
     	{
 
+            unsigned int ret = ret_int(i, nb_bits_utiles);
     		//On place le contraire booleen de la valeur
     		if(!colonne)
-    			v_temp[i] = getPixel(num, i);
+                v_temp[ret] = getPixel(num, i);
     		else
-    			v_temp[i] = getPixel(i, num);
-    	}
+                v_temp[ret] = getPixel(i, num);
+        }
+
+        unsigned int pas = 2;
+        while(pas != _n_size)
+        {
+            unsigned int curseur = 0;
+            while(curseur < _n_size)
+            {
+                for(unsigned int j=curseur; j<curseur + pas/2; j++)
+                {
+                    std::complex<double> smp = v_temp[j];
+                    std::complex<double> smic = v_temp[j+pas/2]*std::polar(1., (double)(j%pas)/pas);
+
+                    v_temp[j] = (double)pas*smp + (double)pas*smic;
+                    v_temp[j+pas/2] = (double)pas*smp - (double)pas*smic;
+                }
+                curseur += pas;
+            }
+
+
+            pas *= pas;
+        }
     }
 
     const std::complex<double>& FPapillon::getPixel(int x, int y)
